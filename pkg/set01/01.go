@@ -8,15 +8,15 @@ import (
 )
 
 // HexToB64 decodes a hex encoded buffer and encodes it back into base64
-func HexToB64(src []byte) []byte {
+func HexToB64(src []byte) ([]byte, error) {
 	tmp := make([]byte, hex.DecodedLen(len(src)))
 	n, err := hex.Decode(tmp, src)
 	if err != nil {
-		panic(errors.Wrap(err, "Could not decode hex string"))
+		return nil, errors.Wrap(err, "Could not decode hex string")
 	}
 
 	encoding := base64.StdEncoding
 	dst := make([]byte, encoding.EncodedLen(n))
 	encoding.Encode(dst, tmp[:n])
-	return dst
+	return dst, nil
 }
