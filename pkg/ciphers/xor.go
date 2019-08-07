@@ -22,3 +22,12 @@ func FixedXOR(src, target []byte) ([]byte, error) {
 	}
 	return dst, nil
 }
+
+// SingleByteXOR produces the xor combination of each byte in the buffer against a single byte
+func SingleByteXOR(src []byte, target byte) []byte {
+	dst := make([]byte, len(src))
+	for i := 0; i < len(src); i++ {
+		dst[i] = src[i] ^ target
+	}
+	return dst
+}

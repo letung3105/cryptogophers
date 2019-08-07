@@ -7,9 +7,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-// FixedXORHex computes fixed xor combination of two hex encodes buffers
+// FixedXORCipher computes fixed xor combination of two hex encodes buffers
 // and returns to hex encoded result
-func FixedXORHex(srcHex, targetHex []byte) ([]byte, error) {
+func FixedXORCipher(srcHex, targetHex []byte) ([]byte, error) {
 	src := make([]byte, hex.DecodedLen(len(srcHex)))
 	if _, err := hex.Decode(src, srcHex); err != nil {
 		return nil, errors.Wrap(err, "Could not decode hex string")
