@@ -2,11 +2,10 @@ package utils
 
 import "bytes"
 
-var lettersFrqOrder = []byte(" etaoinsrhldcumfgpywENTb,.vk-\"_'x)(;0j1q=2:z/*!?$35>{}49[]867\\+|&<%@#^`~")
-
-// ScoreTextEn produces simple normalized score for given text
+// ScoreTxtEn produces simple normalized score for given text
 // based on the letters frequency in the english language
 func ScoreTxtEn(src []byte) float64 {
+	lettersFrqOrder := []byte(" etaoinsrhldcumfgpywENTb,.vk-\"_'x)(;0j1q=2:z/*!?$35>{}49[]867\\+|&<%@#^`~")
 	if len(src) == 0 {
 		return 0
 	}
