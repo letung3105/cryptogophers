@@ -29,13 +29,11 @@ func TestFixedXOR(t *testing.T) {
 		{
 			src:      []byte("\x01\x03\x05\x07"),
 			target:   []byte("\x00\x02\x04\x06\x08"),
-			expected: nil,
 			hasError: true,
 		},
 		{
 			src:      []byte("\x01\x03\x05\x07\x09"),
 			target:   []byte("\x00\x02\x04\x06"),
-			expected: nil,
 			hasError: true,
 		},
 		{

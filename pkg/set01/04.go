@@ -37,5 +37,8 @@ func DetectSingleByteXOR(filepath string) ([]byte, error) {
 			dst = plain
 		}
 	}
+	if err := scanner.Err(); err != nil {
+		return nil, errors.Wrap(err, "Could not scan file")
+	}
 	return dst, nil
 }
