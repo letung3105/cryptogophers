@@ -1,13 +1,13 @@
 # CryptoGophers
 
-Solving cryptopals challenges, found [here](https://cryptopals.com/).
+Solving cryptopals challenges, found [here](https://cryptopals.com/), using Golang
 
 ## Set 1: Basics
 
-0. [ ] Convert hex to base64
-1. [ ] Fixed XOR
-2. [ ] Single-byte XOR cipher
-3. [ ] Detect single-character XOR
+0. [x] Convert hex to base64
+1. [x] Fixed XOR
+2. [x] Single-byte XOR cipher
+3. [x] Detect single-character XOR
 4. [ ] Implement repeating-key XOR
 5. [ ] Break repeating-key XOR
 6. [ ] AES in ECB mode
