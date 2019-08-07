@@ -1,7 +1,6 @@
 package set01
 
 import (
-	"encoding/hex"
 	"testing"
 )
 
