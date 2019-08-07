@@ -55,3 +55,34 @@ func TestFixedXOR(t *testing.T) {
 		}
 	}
 }
+
+func TestSingleByteXOR(t *testing.T) {
+	t.Parallel()
+	tt := []struct {
+		src      []byte
+		target   byte
+		expected []byte
+	}{
+		{
+			src:      []byte("\x01\x03\x05\x07\x09"),
+			target:   byte(1),
+			expected: []byte("\x00\x02\x04\x06\x08"),
+		},
+		{
+			src:      []byte("anfktue"),
+			target:   byte('z'),
+			expected: []byte("\x1b\x14\x1c\x11\x0e\x0f\x1f"),
+		},
+		{
+			src:      []byte(""),
+			target:   byte(2),
+			expected: []byte(""),
+		},
+	}
+	for _, tc := range tt {
+		output := SingleByteXOR(tc.src, tc.target)
+		if !reflect.DeepEqual(output, tc.expected) {
+			t.Errorf("Unexpected output: got %s, expected %s", output, tc.expected)
+		}
+	}
+}
