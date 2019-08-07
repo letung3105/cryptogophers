@@ -31,3 +31,15 @@ func SingleByteXOR(src []byte, target byte) []byte {
 	}
 	return dst
 }
+
+// RepeatingXOR implements repeating key xor
+func RepeatingXOR(src, key []byte) []byte {
+	if len(key) == 0 {
+		return src
+	}
+	dst := make([]byte, len(src))
+	for i := 0; i < len(src); i++ {
+		dst[i] = src[i] ^ key[i%len(key)]
+	}
+	return dst
+}

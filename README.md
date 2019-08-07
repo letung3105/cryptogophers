@@ -8,7 +8,7 @@ Solving cryptopals challenges, found [here](https://cryptopals.com/), using Gola
 1. [x] Fixed XOR
 2. [x] Single-byte XOR cipher
 3. [x] Detect single-character XOR
-4. [ ] Implement repeating-key XOR
+4. [x] Implement repeating-key XOR
 5. [ ] Break repeating-key XOR
 6. [ ] AES in ECB mode
 7. [ ] Detect AES in ECB mode
