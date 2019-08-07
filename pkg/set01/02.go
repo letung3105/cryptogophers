@@ -3,7 +3,7 @@ package set01
 import (
 	"encoding/hex"
 
-	"github.com/letung3105/cryptopals/pkg/ciphers"
+	"github.com/letung3105/cryptogophers/pkg/crypts"
 	"github.com/pkg/errors"
 )
 
@@ -20,7 +20,7 @@ func FixedXORCipher(srcHex, targetHex []byte) ([]byte, error) {
 		return nil, errors.Wrap(err, "Could not decode hex string")
 	}
 
-	res, err := ciphers.FixedXOR(src, target)
+	res, err := crypts.FixedXOR(src, target)
 	if err != nil {
 		return nil, errors.Wrap(err, "Could not get fixed xor")
 	}
