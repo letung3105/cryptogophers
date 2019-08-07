@@ -1,6 +1,7 @@
 package crypts
 
 import (
+	"encoding/hex"
 	"reflect"
 	"testing"
 )
@@ -47,11 +48,12 @@ func TestFixedXOR(t *testing.T) {
 
 	for _, tc := range tt {
 		output, err := FixedXOR(tc.src, tc.target)
-		if err != nil && !tc.hasError {
+		if err != nil && tc.hasError {
 			t.Errorf("Unexpected error occurs: %v", err)
-		}
-		if !reflect.DeepEqual(output, tc.expected) {
-			t.Errorf("Unexpected output: got %s, expected %s", output, tc.expected)
+		} else {
+			if !reflect.DeepEqual(output, tc.expected) {
+				t.Errorf("Unexpected output: got %s, expected %s", output, tc.expected)
+			}
 		}
 	}
 }
@@ -83,6 +85,63 @@ func TestSingleByteXOR(t *testing.T) {
 		output := SingleByteXOR(tc.src, tc.target)
 		if !reflect.DeepEqual(output, tc.expected) {
 			t.Errorf("Unexpected output: got %s, expected %s", output, tc.expected)
+		}
+	}
+}
+
+func TestRepeatingXOR(t *testing.T) {
+	t.Parallel()
+	tt := []struct {
+		plain     []byte
+		key       []byte
+		cipherHex []byte
+		hasError  bool
+	}{
+		{
+			plain:     []byte("This is a test plaintext"),
+			key:       []byte("TEST"),
+			cipherHex: []byte("002d3a27742c2074356527312731732438243a3a20202b20"),
+			hasError:  false,
+		},
+		{
+			plain:     []byte("This is another test plaintext"),
+			key:       []byte("T"),
+			cipherHex: []byte("003c3d27743d2774353a3b203c31267420312720742438353d3a20312c20"),
+			hasError:  false,
+		},
+		{
+			plain:     []byte("dkgtbkljrtljerkltjerkjfklsdjtiolnjbv"),
+			key:       []byte("dkalcitk"),
+			cipherHex: []byte("0000061801021801161f0d06061b1f071001041e080312000818050617001b070a01031a"),
+			hasError:  false,
+		},
+		{
+			plain:     []byte("Short key!"),
+			key:       []byte("A very long key"),
+			cipherHex: nil,
+			hasError:  true,
+		},
+		{
+			plain:     []byte("This test has no key"),
+			key:       []byte(""),
+			cipherHex: nil,
+			hasError:  true,
+		},
+	}
+
+	for _, tc := range tt {
+		output, err := RepeatingXOR(tc.plain, tc.key)
+		if err != nil && tc.hasError {
+			t.Errorf("Unexpected error occurs: %v", err)
+		} else {
+			cipher := make([]byte, hex.DecodedLen(len(tc.cipherHex)))
+			n, err := hex.Decode(cipher, tc.cipherHex)
+			if err != nil {
+				t.Fatalf("Could not decode hex: %v", err)
+			}
+			if !reflect.DeepEqual(output, cipher[:n]) {
+				t.Errorf("Unexpected output: got %s, expected %s", output, cipher[:n])
+			}
 		}
 	}
 }
