@@ -16,12 +16,15 @@ func TestSingleByteXOR(t *testing.T) {
 		{plain: []byte("This is a testing plain text for single byte xor encryption"), key: byte('K')},
 		{plain: []byte("short sentence!"), key: byte('K')},
 		{plain: []byte("This! Contain punctuations?!"), key: byte('K')},
-		{plain: []byte(""), key: byte('K')},
+		{plain: []byte("")},
 	}
 
 	for _, tc := range tt {
 		cipher := crypts.SingleByteXOR(tc.plain, tc.key)
-		output := SingleByteXOR(cipher)
+		output, key, _ := SingleByteXOR(cipher)
+		if key != tc.key {
+			t.Fatalf("Incorrect key: got %c, expected %c", key, tc.key)
+		}
 		if !reflect.DeepEqual(output, tc.plain) {
 			t.Errorf("Incorrect plain text: got %s, expected %s", output, tc.plain)
 		}
