@@ -4,46 +4,52 @@ import "testing"
 
 func TestHammingDistance(t *testing.T) {
 	t.Parallel()
-	tt := []struct {
-		src      []byte
-		target   []byte
-		expected int
+	tests := []struct {
+		name     string
 		hasError bool
+		target   []byte
+		in       []byte
+		out      int
 	}{
 		{
-			src:      []byte("this is a test"),
-			target:   []byte("wokka wokka!!!"),
-			expected: 37,
-			hasError: false,
+			"MatchLength",
+			false,
+			[]byte("wokka wokka!!!"),
+			[]byte("this is a test"),
+			37,
 		},
 		{
-			src:      []byte("this is a test"),
-			target:   []byte("a unequal buffer"),
-			expected: -1,
-			hasError: true,
+			"MismatchLength",
+			true,
+			[]byte("a unequal buffer"),
+			[]byte("this is a test"),
+			-1,
 		},
 		{
-			src:      []byte("chewbacca"),
-			target:   []byte("chewbacca"),
-			expected: 0,
-			hasError: false,
+			"SameInputs",
+			false,
+			[]byte("chewbacca"),
+			[]byte("chewbacca"),
+			0,
 		},
 		{
-			src:      []byte(""),
-			target:   []byte(""),
-			expected: 0,
-			hasError: false,
+			"EmptyInputs",
+			false,
+			[]byte(""),
+			[]byte(""),
+			0,
 		},
 	}
 
-	for _, tc := range tt {
-		output, err := HammingDistance(tc.src, tc.target)
-		if err != nil && !tc.hasError {
-			t.Errorf("Unexpected error: %v", err)
-		} else {
-			if output != tc.expected {
-				t.Errorf("Unexpected output: got %d, expected %d", output, tc.expected)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out, err := HammingDistance(test.in, test.target)
+			if err != nil && !test.hasError {
+				t.Fatalf("unexpected error: %+v", err)
 			}
-		}
+			if out != test.out {
+				t.Errorf("unexpected output:\nhave %d\nwant %d", out, test.out)
+			}
+		})
 	}
 }

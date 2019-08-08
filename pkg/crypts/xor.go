@@ -7,7 +7,7 @@ import (
 // FixedXOR produces fixed xor of each byte in two equal length buffers
 func FixedXOR(src, key []byte) ([]byte, error) {
 	if len(src) != len(key) {
-		return nil, errors.Errorf("length mismatch: got %d and %d", len(src), len(key))
+		return nil, errors.Errorf("length mismatch: have %d and %d", len(src), len(key))
 	}
 
 	dst := make([]byte, len(src))

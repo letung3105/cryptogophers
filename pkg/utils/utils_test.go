@@ -9,7 +9,7 @@ func TestBytesBlocksMake(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name      string
-		blocksize uint
+		blocksize int
 		in        []byte
 		out       [][]byte
 	}{
@@ -43,8 +43,7 @@ func TestBytesBlocksMake(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			out := BytesBlockMake(test.in, test.blocksize)
 			if !reflect.DeepEqual(out, test.out) {
-				t.Errorf("BytesBlockMake(%q, %d)\nhave %v\nwant %v",
-					test.in, test.blocksize, out, test.out)
+				t.Errorf("unexpected output:\nhave %v\nwant %v", out, test.out)
 			}
 		})
 	}
@@ -52,37 +51,45 @@ func TestBytesBlocksMake(t *testing.T) {
 
 func TestBytesBlocksTranspose(t *testing.T) {
 	t.Parallel()
-	tt := []struct {
-		input    [][]byte
-		expected [][]byte
+	tests := []struct {
+		name string
+		in   [][]byte
+		out  [][]byte
 	}{
 		{
+			"EvenBlocks",
 			[][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc")},
 			[][]byte{[]byte("abc"), []byte("abc"), []byte("abc")},
 		},
 		{
+			"OneBlock",
 			[][]byte{[]byte("aa")},
 			[][]byte{[]byte("a"), []byte("a")},
 		},
 		{
+			"TrailingBlock",
 			[][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc"), []byte("d")},
 			[][]byte{[]byte("abcd"), []byte("abc"), []byte("abc")},
 		},
 		{
+			"Singular",
 			[][]byte{[]byte("a")},
 			[][]byte{[]byte("a")},
 		},
 		{
+			"Empty",
 			[][]byte{},
 			nil,
 		},
 	}
 
-	for _, tc := range tt {
-		blocks := BytesBlocksTranspose(tc.input)
-		if !reflect.DeepEqual(blocks, tc.expected) {
-			t.Errorf("Unexpected output: got %v, expected %v", blocks, tc.expected)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out := BytesBlocksTranspose(test.in)
+			if !reflect.DeepEqual(out, test.out) {
+				t.Errorf("unexpected output:\nhave %v\nwant %v", out, test.out)
+			}
+		})
 	}
 }
 
@@ -130,10 +137,7 @@ func TestHasDupBlock(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			out := HasNonOverlapDup(test.in, test.blocksize)
 			if out != test.out {
-				t.Errorf(
-					"Input: '%s' | Blocksize: %d\nhave %t\nwant %t",
-					test.in, test.blocksize, out, test.out,
-				)
+				t.Errorf("unexpected output:\nhave %t\nwant %t", out, test.out)
 			}
 		})
 	}
