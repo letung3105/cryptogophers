@@ -19,9 +19,9 @@ func TestFixedXORCipher(t *testing.T) {
 
 	out, err := FixedXORCipher(test.in, test.key)
 	if err != nil {
-		t.Fatalf("FixedXORCipher(%x, %x) = %+v", test.in, test.key, err)
+		t.Fatalf("unexpected error: %+v", err)
 	}
 	if !bytes.Equal(out, test.out) {
-		t.Errorf("unexpected output\nhave %x\nwant %x", out, test.out)
+		t.Errorf("unexpected output:\nhave %s\nwant %s", out, test.out)
 	}
 }

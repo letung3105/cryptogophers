@@ -2,7 +2,6 @@ package set01
 
 import (
 	"encoding/hex"
-	"fmt"
 
 	"github.com/letung3105/cryptogophers/pkg/crypts"
 	"github.com/pkg/errors"
@@ -13,23 +12,17 @@ import (
 func FixedXORCipher(srcHex, keyHex []byte) ([]byte, error) {
 	src := make([]byte, hex.DecodedLen(len(srcHex)))
 	if _, err := hex.Decode(src, srcHex); err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf(
-			"could not decode %x", srcHex,
-		))
+		return nil, errors.Wrapf(err, "could not decode: %s", srcHex)
 	}
 
 	key := make([]byte, hex.DecodedLen(len(keyHex)))
 	if _, err := hex.Decode(key, keyHex); err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf(
-			"could not decode %x", keyHex,
-		))
+		return nil, errors.Wrapf(err, "could not decode: %s", keyHex)
 	}
 
 	dst, err := crypts.FixedXOR(src, key)
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf(
-			"could not evaluate %x and %x", src, key,
-		))
+		return nil, errors.Wrapf(err, "could not evaluate: %s and %s", src, key)
 	}
 
 	dstHex := make([]byte, hex.EncodedLen(len(dst)))
