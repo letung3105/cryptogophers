@@ -6,19 +6,18 @@ import (
 	"math"
 	"os"
 
-	"github.com/letung3105/cryptogophers/pkg/decrypts"
 	"github.com/pkg/errors"
 )
 
-// DetectSingleByteXOR find the single line the the given file that is single byte xor encrypted
-func DetectSingleByteXOR(filepath string) ([]byte, byte, error) {
-	var key byte
+// DetectSingleXOR find the single line the the given file that is single byte xor encrypted
+func DetectSingleXOR(filepath string) ([]byte, byte, float64, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
-		return nil, key, errors.Wrap(err, "Could not open file")
+		return nil, 0x00, 0, errors.Wrapf(err, "could not open: %s", filepath)
 	}
 
 	var dst []byte
+	var key byte
 	minScore := math.MaxFloat64
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanLines)
@@ -27,10 +26,10 @@ func DetectSingleByteXOR(filepath string) ([]byte, byte, error) {
 		src := make([]byte, hex.DecodedLen(len(srcHex)))
 		n, err := hex.Decode(src, srcHex)
 		if err != nil {
-			return nil, key, errors.Wrap(err, "Could not decode hex string")
+			return nil, 0x00, 0, errors.Wrapf(err, "could not decode: %s", srcHex)
 		}
 
-		plain, pk, score := decrypts.SingleByteXOR(src[:n])
+		plain, pk, score := SingleXORDecrypt(src[:n])
 		if score < minScore {
 			minScore = score
 			dst = plain
@@ -38,7 +37,7 @@ func DetectSingleByteXOR(filepath string) ([]byte, byte, error) {
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, key, errors.Wrap(err, "Could not scan file")
+		return nil, 0x00, 0, errors.Wrapf(err, "could not scan file: %s", filepath)
 	}
-	return dst, key, nil
+	return dst, key, minScore, nil
 }
