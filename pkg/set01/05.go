@@ -9,8 +9,8 @@ import (
 // RepeatingXORHex computes repeating xor combination from src and key
 // then hex encode the result
 func RepeatingXORHex(src, key []byte) []byte {
-	cipher := crypts.RepeatingXOR(src, key)
-	dst := make([]byte, hex.EncodedLen(len(cipher)))
-	n := hex.Encode(dst, cipher)
-	return dst[:n]
+	dst := crypts.RepeatingXOR(src, key)
+	dstHex := make([]byte, hex.EncodedLen(len(dst)))
+	n := hex.Encode(dstHex, dst)
+	return dstHex[:n]
 }
