@@ -1,5 +1,5 @@
 // Common test input and output
-// Take from Golang official crypto package
+// Taken from Golang official crypto package
 
 package crypts
 

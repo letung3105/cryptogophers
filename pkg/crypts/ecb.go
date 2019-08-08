@@ -1,7 +1,7 @@
 // Electronic code block (ECB) mode
 
-// Implementaion based on Golang officials CBC cipher
-// https://golang.org/src/crypto/cipher/cbc.go
+// Implementaion based on Golang officials cipher package
+// https://golang.org/src/crypto/cipher/
 
 package crypts
 
@@ -32,10 +32,10 @@ func (x *ebcEncrypter) BlockSize() int {
 
 func (x *ebcEncrypter) CryptBlocks(dst, src []byte) {
 	if len(src)%x.blockSize != 0 {
-		panic("Input not full blocks")
+		panic("input not full blocks")
 	}
 	if len(dst) < len(src) {
-		panic("Output smaller than input")
+		panic("output smaller than input")
 	}
 
 	for len(src) > 0 {
@@ -58,10 +58,10 @@ func (x *ebcDecrypter) BlockSize() int {
 
 func (x *ebcDecrypter) CryptBlocks(dst, src []byte) {
 	if len(src)%x.blockSize != 0 {
-		panic("Input not full blocks")
+		panic("input not full blocks")
 	}
 	if len(dst) < len(src) {
-		panic("Output smaller than input")
+		panic("output smaller than input")
 	}
 
 	for len(src) > 0 {

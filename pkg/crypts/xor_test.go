@@ -1,135 +1,147 @@
 package crypts
 
 import (
-	"encoding/hex"
-	"reflect"
+	"bytes"
 	"testing"
 )
 
 func TestFixedXOR(t *testing.T) {
 	t.Parallel()
-	tt := []struct {
-		src      []byte
-		target   []byte
-		expected []byte
+	tests := []struct {
+		name     string
 		hasError bool
+		in       []byte
+		key      []byte
+		out      []byte
 	}{
 		{
-			src:      []byte("\x01\x03\x05\x07\x09"),
-			target:   []byte("\x00\x02\x04\x06\x08"),
-			expected: []byte("\x01\x01\x01\x01\x01"),
-			hasError: false,
+			"EqualLength",
+			false,
+			[]byte{0x01, 0x03, 0x05, 0x07, 0x09},
+			[]byte{0x00, 0x02, 0x04, 0x06, 0x08},
+			[]byte{0x01, 0x01, 0x01, 0x01, 0x01},
 		},
 		{
-			src:      []byte("anfktue"),
-			target:   []byte("qorjvba"),
-			expected: []byte("\x10\x01\x14\x01\x02\x17\x04"),
-			hasError: false,
+			"EmptyInputs",
+			false,
+			[]byte{},
+			[]byte{},
+			[]byte{},
 		},
 		{
-			src:      []byte("\x01\x03\x05\x07"),
-			target:   []byte("\x00\x02\x04\x06\x08"),
-			hasError: true,
-		},
-		{
-			src:      []byte("\x01\x03\x05\x07\x09"),
-			target:   []byte("\x00\x02\x04\x06"),
-			hasError: true,
-		},
-		{
-			src:      []byte(""),
-			target:   []byte(""),
-			expected: []byte(""),
-			hasError: false,
+			"MismatchLength",
+			true,
+			[]byte{0x01, 0x03, 0x05, 0x07},
+			[]byte{0x00, 0x02, 0x04, 0x06, 0x08},
+			nil,
 		},
 	}
 
-	for _, tc := range tt {
-		output, err := FixedXOR(tc.src, tc.target)
-		if err != nil && !tc.hasError {
-			t.Errorf("Unexpected error occurs: %v", err)
-		} else {
-			if !reflect.DeepEqual(output, tc.expected) {
-				t.Errorf("Unexpected output: got %s, expected %s", output, tc.expected)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out, err := FixedXOR(test.in, test.key)
+			if err != nil && !test.hasError {
+				t.Fatalf("unexpected error: %+v", err)
 			}
-		}
+			if !bytes.Equal(out, test.out) {
+				t.Errorf(
+					"FixedXOR(%x, %x)\nhave %x\nwant %x",
+					test.in, test.key, out, test.out,
+				)
+			}
+		})
 	}
 }
 
 func TestSingleByteXOR(t *testing.T) {
 	t.Parallel()
-	tt := []struct {
-		src      []byte
-		target   byte
-		expected []byte
+	tests := []struct {
+		name string
+		in   []byte
+		key  byte
+		out  []byte
 	}{
 		{
-			src:      []byte("\x01\x03\x05\x07\x09"),
-			target:   byte(1),
-			expected: []byte("\x00\x02\x04\x06\x08"),
+			"InputFull",
+			[]byte{0x01, 0x03, 0x05, 0x07, 0x09},
+			byte(0x01),
+			[]byte("\x00\x02\x04\x06\x08"),
 		},
 		{
-			src:      []byte("anfktue"),
-			target:   byte('z'),
-			expected: []byte("\x1b\x14\x1c\x11\x0e\x0f\x1f"),
-		},
-		{
-			src:      []byte(""),
-			target:   byte(2),
-			expected: []byte(""),
+			"InputEmpty",
+			[]byte{},
+			byte(0x00),
+			[]byte{},
 		},
 	}
-	for _, tc := range tt {
-		output := SingleByteXOR(tc.src, tc.target)
-		if !reflect.DeepEqual(output, tc.expected) {
-			t.Errorf("Unexpected output: got %s, expected %s", output, tc.expected)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out := SingleByteXOR(test.in, test.key)
+			if !bytes.Equal(out, test.out) {
+				t.Errorf(
+					"SingleByteXOR(%x, %x)\nhave%x\nwant %x",
+					test.in, test.key, out, test.out,
+				)
+			}
+		})
 	}
 }
 
 func TestRepeatingXOR(t *testing.T) {
 	t.Parallel()
-	tt := []struct {
-		plain     []byte
-		key       []byte
-		cipherHex []byte
+	tests := []struct {
+		name string
+		in   []byte
+		key  []byte
+		out  []byte
 	}{
 		{
-			plain:     []byte("This is a test plaintext"),
-			key:       []byte("TEST"),
-			cipherHex: []byte("002d3a27742c2074356527312731732438243a3a20202b20"),
+			"InputFullBlocks",
+			[]byte{0x01, 0x02, 0x03, 0x01, 0x02, 0x03},
+			[]byte{0x01, 0x02, 0x03},
+			[]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 		},
 		{
-			plain:     []byte("This is another test plaintext"),
-			key:       []byte("T"),
-			cipherHex: []byte("003c3d27743d2774353a3b203c31267420312720742438353d3a20312c20"),
+			"InputNotFullBlocks",
+			[]byte{0x01, 0x02, 0x03, 0x04, 0x01, 0x02},
+			[]byte{0x01, 0x02, 0x03, 0x04},
+			[]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 		},
 		{
-			plain:     []byte("dkgtbkljrtljerkltjerkjfklsdjtiolnjbv"),
-			key:       []byte("dkalcitk"),
-			cipherHex: []byte("0000061801021801161f0d06061b1f071001041e080312000818050617001b070a01031a"),
+			"InputSmallerThanKey",
+			[]byte{0x01, 0x02, 0x03},
+			[]byte{0x01, 0x02, 0x03, 0x04, 0x01, 0x02},
+			[]byte{0x00, 0x00, 0x00},
 		},
 		{
-			plain:     []byte("Short key!"),
-			key:       []byte("A very long key"),
-			cipherHex: []byte("1248191706594b09164f"),
+			"KeySingle",
+			[]byte{0x01, 0x01, 0x01, 0x01, 0x01, 0x01},
+			[]byte{0x01},
+			[]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 		},
 		{
-			plain:     []byte("This test has no key"),
-			key:       []byte(""),
-			cipherHex: []byte("54686973207465737420686173206e6f206b6579"),
+			"InputEmpty",
+			[]byte{},
+			[]byte{0x01, 0x02, 0x03},
+			[]byte{},
+		},
+		{
+			"KeyEmpty",
+			[]byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06},
+			[]byte{},
+			[]byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06},
 		},
 	}
 
-	for _, tc := range tt {
-		output := RepeatingXOR(tc.plain, tc.key)
-		cipher := make([]byte, hex.DecodedLen(len(tc.cipherHex)))
-		n, err := hex.Decode(cipher, tc.cipherHex)
-		if err != nil {
-			t.Fatalf("Could not decode hex: %v", err)
-		}
-		if !reflect.DeepEqual(output, cipher[:n]) {
-			t.Errorf("Unexpected output: got %s, expected %s", output, cipher[:n])
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out := RepeatingXOR(test.in, test.key)
+			if !bytes.Equal(out, test.out) {
+				t.Errorf(
+					"RepeatingXOR(%x, %x)\nhave%x\nwant %x",
+					test.in, test.key, out, test.out,
+				)
+			}
+		})
 	}
 }

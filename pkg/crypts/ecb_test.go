@@ -8,12 +8,14 @@ import (
 
 var ecbAESTests = []struct {
 	name string
+	blocksize int
 	key  []byte
 	in   []byte
 	out  []byte
 }{
 	{
 		"ECB-AES128",
+		16,
 		commonKey128,
 		commonInput,
 		[]byte{
@@ -25,6 +27,7 @@ var ecbAESTests = []struct {
 	},
 	{
 		"ECB-AES192",
+		24,
 		commonKey192,
 		commonInput,
 		[]byte{
@@ -36,6 +39,7 @@ var ecbAESTests = []struct {
 	},
 	{
 		"ECB-AES256",
+		32,
 		commonKey256,
 		commonInput,
 		[]byte{
@@ -58,9 +62,12 @@ func TestECBEncrypterAES(t *testing.T) {
 			}
 
 			encrypter := NewECBEncrypter(c)
+			if encrypter.BlockSize() != test.blocksize {
+				t.Errorf("ECBEncrypter: incorrect block size\nhave %x\nwant %x", encrypter.BlockSize(), test.blocksize)
+			}
+
 			data := make([]byte, len(test.in))
 			copy(data, test.in)
-
 			encrypter.CryptBlocks(data, data)
 			if !bytes.Equal(test.out, data) {
 				t.Errorf("ECBEncrypter\nhave %x\nwant %x", data, test.out)
@@ -80,9 +87,12 @@ func TestECBDecrypterAES(t *testing.T) {
 			}
 
 			decrypter := NewECBDecrypter(c)
+			if decrypter.BlockSize() != test.blocksize {
+				t.Errorf("ECBEncrypter: incorrect block size\nhave %x\nwant %x", decrypter.BlockSize(), test.blocksize)
+			}
+
 			data := make([]byte, len(test.out))
 			copy(data, test.out)
-
 			decrypter.CryptBlocks(data, data)
 			if !bytes.Equal(test.in, data) {
 				t.Errorf("ECBDecrypter\nhave %x\nwant %x", data, test.in)

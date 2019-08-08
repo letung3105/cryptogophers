@@ -2,32 +2,26 @@ package crypts
 
 import (
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 // FixedXOR produces fixed xor of each byte in two equal length buffers
-func FixedXOR(src, target []byte) ([]byte, error) {
-	if len(src) != len(target) {
-		return nil,
-			errors.New(fmt.Sprintf(
-				"Length mismatch: got %d and %d",
-				len(src), len(target),
-			))
+func FixedXOR(src, key []byte) ([]byte, error) {
+	if len(src) != len(key) {
+		return nil, fmt.Errorf("length mismatch: got %d and %d", len(src), len(key))
 	}
 
 	dst := make([]byte, len(src))
 	for i := 0; i < len(src); i++ {
-		dst[i] = src[i] ^ target[i]
+		dst[i] = src[i] ^ key[i]
 	}
 	return dst, nil
 }
 
 // SingleByteXOR produces the xor combination of each byte in the buffer against a single byte
-func SingleByteXOR(src []byte, target byte) []byte {
+func SingleByteXOR(src []byte, key byte) []byte {
 	dst := make([]byte, len(src))
 	for i := 0; i < len(src); i++ {
-		dst[i] = src[i] ^ target
+		dst[i] = src[i] ^ key
 	}
 	return dst
 }
