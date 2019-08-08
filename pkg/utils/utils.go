@@ -45,7 +45,7 @@ func HasNonOverlapDup(src []byte, blocksize int) bool {
 			if bytes.Contains(src[blocksize:], src[:blocksize]) {
 				return true
 			}
-			src = src[:blocksize]
+			src = src[blocksize:]
 		}
 	}
 	return false

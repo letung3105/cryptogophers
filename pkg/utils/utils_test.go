@@ -102,7 +102,7 @@ func TestHasDupBlock(t *testing.T) {
 		},
 		{
 			"DupSecondBlock",
-			1,
+			3,
 			[]byte("aaabbbcccbbb"),
 			true,
 		},
