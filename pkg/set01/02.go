@@ -2,6 +2,7 @@ package set01
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	"github.com/letung3105/cryptogophers/pkg/crypts"
 	"github.com/pkg/errors"
@@ -9,23 +10,29 @@ import (
 
 // FixedXORCipher computes fixed xor combination of two hex encodes buffers
 // and returns to hex encoded result
-func FixedXORCipher(srcHex, targetHex []byte) ([]byte, error) {
+func FixedXORCipher(srcHex, keyHex []byte) ([]byte, error) {
 	src := make([]byte, hex.DecodedLen(len(srcHex)))
 	if _, err := hex.Decode(src, srcHex); err != nil {
-		return nil, errors.Wrap(err, "Could not decode hex string")
+		return nil, errors.Wrap(err, fmt.Sprintf(
+			"could not decode %x", srcHex,
+		))
 	}
 
-	target := make([]byte, hex.DecodedLen(len(targetHex)))
-	if _, err := hex.Decode(target, targetHex); err != nil {
-		return nil, errors.Wrap(err, "Could not decode hex string")
+	key := make([]byte, hex.DecodedLen(len(keyHex)))
+	if _, err := hex.Decode(key, keyHex); err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf(
+			"could not decode %x", keyHex,
+		))
 	}
 
-	res, err := crypts.FixedXOR(src, target)
+	dst, err := crypts.FixedXOR(src, key)
 	if err != nil {
-		return nil, errors.Wrap(err, "Could not get fixed xor")
+		return nil, errors.Wrap(err, fmt.Sprintf(
+			"could not evaluate %x and %x", src, key,
+		))
 	}
 
-	dst := make([]byte, hex.EncodedLen(len(res)))
-	n := hex.Encode(dst, res)
-	return dst[:n], nil
+	dstHex := make([]byte, hex.EncodedLen(len(dst)))
+	n := hex.Encode(dstHex, dst)
+	return dstHex[:n], nil
 }
