@@ -3,7 +3,6 @@ package set01
 import (
 	"bufio"
 	"encoding/hex"
-	"fmt"
 	"os"
 
 	"github.com/letung3105/cryptogophers/pkg/utils"
@@ -14,28 +13,28 @@ import (
 func DetectECB(filepath string, blocksize int) ([][]byte, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf(
-			"Could not open %q", filepath,
-		))
+		return nil, errors.Wrapf(err, "could not open: %s", filepath)
 	}
 
-	var ciphers [][]byte
+	var found [][]byte
 	scanner := bufio.NewScanner(f)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
-		bHex := scanner.Bytes()
-		b := make([]byte, hex.DecodedLen(len(bHex)))
-		n, err := hex.Decode(b, bHex)
+		srcHex := scanner.Bytes()
+		src := make([]byte, hex.DecodedLen(len(srcHex)))
+		n, err := hex.Decode(src, srcHex)
 		if err != nil {
-			return nil, errors.Wrap(err, fmt.Sprintf(
-				"could not decode: %x", bHex,
-			))
+			return nil, errors.Wrapf(err, "could not decode: %s", srcHex)
 		}
-		b = b[:n]
+		src = src[:n]
 
-		if utils.HasNonOverlapDup(b, blocksize) {
-			ciphers = append(ciphers, b)
+		if utils.HasNonOverlapDup(src, blocksize) {
+			found = append(found, srcHex)
 		}
 	}
-	return ciphers, nil
+	if err := scanner.Err(); err != nil {
+		return nil, errors.Wrapf(err, "could not scan file: %s", filepath)
+	}
+
+	return found, nil
 }

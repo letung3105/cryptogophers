@@ -1,17 +1,27 @@
 package set01
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestDetectECB(t *testing.T) {
 	t.Parallel()
-	filepath := "../../data/09.txt"
-	blocksize := 16
+	test := struct {
+		filepath  string
+		blocksize int
+	}{
+		"../../data/08.txt",
+		16,
+	}
 
-	ciphers, err := DetectECB(filepath, blocksize)
+	ciphers, err := DetectECB(test.filepath, test.blocksize)
 	if err != nil {
-		t.Fatalf("DetectECB(%q) = %+v", filepath, err)
+		t.Fatalf("unexpected error: %+v", err)
 	}
-	for _, cipher := range ciphers {
-		t.Logf("blocksize: %d\n%x", blocksize, cipher)
+	out := ""
+	for _, c := range ciphers {
+		out += fmt.Sprintf("+ %s\n", c)
 	}
+	t.Logf("found:\n%s", out)
 }
