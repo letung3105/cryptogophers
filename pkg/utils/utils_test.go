@@ -7,37 +7,46 @@ import (
 
 func TestBytesBlocksMake(t *testing.T) {
 	t.Parallel()
-	tt := []struct {
-		input     []byte
+	tests := []struct {
+		name      string
 		blocksize uint
-		expected  [][]byte
+		in        []byte
+		out       [][]byte
 	}{
 		{
-			input:     []byte("aaabbbccc"),
-			blocksize: 3,
-			expected:  [][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc")},
+			"EvenBlock",
+			3,
+			[]byte("aaabbbccc"),
+			[][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc")},
 		},
 		{
-			input:     []byte("aa"),
-			blocksize: 3,
-			expected:  [][]byte{[]byte("aa")},
+			"FirstBlockTrailing",
+			3,
+			[]byte("aa"),
+			[][]byte{[]byte("aa")},
 		},
 		{
-			input:     []byte("aaabbbcccd"),
-			blocksize: 3,
-			expected:  [][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc"), []byte("d")},
+			"LastBlockTrailing",
+			3,
+			[]byte("aaabbbcccd"),
+			[][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc"), []byte("d")},
 		},
 		{
-			input:     []byte(""),
-			blocksize: 3,
+			"EmptyInput",
+			3,
+			[]byte(""),
+			nil,
 		},
 	}
 
-	for _, tc := range tt {
-		blocks := BytesBlockMake(tc.input, tc.blocksize)
-		if !reflect.DeepEqual(blocks, tc.expected) {
-			t.Errorf("Unexpected output: got %v, expected %v", blocks, tc.expected)
-		}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out := BytesBlockMake(test.in, test.blocksize)
+			if !reflect.DeepEqual(out, test.out) {
+				t.Errorf("BytesBlockMake(%q, %d)\nhave %v\nwant %v",
+					test.in, test.blocksize, out, test.out)
+			}
+		})
 	}
 }
 
@@ -48,23 +57,24 @@ func TestBytesBlocksTranspose(t *testing.T) {
 		expected [][]byte
 	}{
 		{
-			input:    [][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc")},
-			expected: [][]byte{[]byte("abc"), []byte("abc"), []byte("abc")},
+			[][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc")},
+			[][]byte{[]byte("abc"), []byte("abc"), []byte("abc")},
 		},
 		{
-			input:    [][]byte{[]byte("aa")},
-			expected: [][]byte{[]byte("a"), []byte("a")},
+			[][]byte{[]byte("aa")},
+			[][]byte{[]byte("a"), []byte("a")},
 		},
 		{
-			input:    [][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc"), []byte("d")},
-			expected: [][]byte{[]byte("abcd"), []byte("abc"), []byte("abc")},
+			[][]byte{[]byte("aaa"), []byte("bbb"), []byte("ccc"), []byte("d")},
+			[][]byte{[]byte("abcd"), []byte("abc"), []byte("abc")},
 		},
 		{
-			input:    [][]byte{[]byte("a")},
-			expected: [][]byte{[]byte("a")},
+			[][]byte{[]byte("a")},
+			[][]byte{[]byte("a")},
 		},
 		{
-			input: [][]byte{},
+			[][]byte{},
+			nil,
 		},
 	}
 
@@ -73,5 +83,58 @@ func TestBytesBlocksTranspose(t *testing.T) {
 		if !reflect.DeepEqual(blocks, tc.expected) {
 			t.Errorf("Unexpected output: got %v, expected %v", blocks, tc.expected)
 		}
+	}
+}
+
+func TestHasDupBlock(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name      string
+		blocksize int
+		in        []byte
+		out       bool
+	}{
+		{
+			"DupFirstBlock",
+			3,
+			[]byte("aaabbbaaa"),
+			true,
+		},
+		{
+			"DupSecondBlock",
+			1,
+			[]byte("aaabbbcccbbb"),
+			true,
+		},
+		{
+			"LargeBlockSize",
+			5,
+			[]byte("aaaaaa"),
+			false,
+		},
+		{
+			"ZeroBlockSize",
+			0,
+			[]byte("aaaaaaaa"),
+			false,
+		},
+		{
+			"EmptyInput",
+			3,
+			[]byte(""),
+			false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			out := HasNonOverlapDup(test.in, test.blocksize)
+			if out != test.out {
+				t.Errorf(
+					"Input: '%s' | Blocksize: %d\nhave %t\nwant %t",
+					test.in, test.blocksize, out, test.out,
+				)
+			}
+		})
 	}
 }

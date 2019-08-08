@@ -1,14 +1,20 @@
 package utils
 
+import (
+	"bytes"
+)
+
 // BytesBlockMake splits the buffer into chunks of with max length of blocksize
 func BytesBlockMake(src []byte, blocksize uint) [][]byte {
 	var blocks [][]byte
-	for len(src) > int(blocksize) {
-		blocks = append(blocks, src[:blocksize])
-		src = src[blocksize:]
-	}
-	if len(src) > 0 {
-		blocks = append(blocks, src)
+	if blocksize > 0 {
+		for len(src) > int(blocksize) {
+			blocks = append(blocks, src[:blocksize])
+			src = src[blocksize:]
+		}
+		if len(src) > 0 {
+			blocks = append(blocks, src)
+		}
 	}
 	return blocks
 }
@@ -30,4 +36,17 @@ func BytesBlocksTranspose(src [][]byte) [][]byte {
 		blocks[j] = block
 	}
 	return blocks
+}
+
+// HasNonOverlapDup checks if the buffer has duplicated non-overlap blocks of length blocksize
+func HasNonOverlapDup(src []byte, blocksize int) bool {
+	if blocksize > 0 {
+		for len(src) > blocksize {
+			if bytes.Contains(src[blocksize:], src[:blocksize]) {
+				return true
+			}
+			src = src[:blocksize]
+		}
+	}
+	return false
 }
