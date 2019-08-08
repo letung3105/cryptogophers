@@ -3,6 +3,7 @@ package utils
 import "testing"
 
 func TestHammingDistance(t *testing.T) {
+	t.Parallel()
 	tt := []struct {
 		src      []byte
 		target   []byte
