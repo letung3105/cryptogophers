@@ -1,19 +1,22 @@
-# CryptoGophers
+CryptoGophers
+===
 
 Solving cryptopals challenges, found [here](https://cryptopals.com/), using Golang
 
-## Set 1: Basics
+Set 1: Basics
+---
 
 0. [x] Convert hex to base64
 1. [x] Fixed XOR
 2. [x] Single-byte XOR cipher
 3. [x] Detect single-character XOR
 4. [x] Implement repeating-key XOR
-5. [ ] Break repeating-key XOR
-6. [ ] AES in ECB mode
-7. [ ] Detect AES in ECB mode
+5. [x] Break repeating-key XOR
+6. [x] AES in ECB mode
+7. [x] Detect AES in ECB mode
 
-## Set 2: Block crypto
+Set 2: Block crypto
+---
 
 0. [ ] Implement PKCS#7 padding
 1. [ ] Implement CBC mode
@@ -24,7 +27,8 @@ Solving cryptopals challenges, found [here](https://cryptopals.com/), using Gola
 6. [ ] PKCS#7 padding validation
 7. [ ] CBC bitflipping attacks
 
-## Set 3: Block and stream crypto
+Set 3: Block and stream crypto
+---
 
 0. [ ] The CBC padding oracle
 1. [ ] Implement CTR, the stream cipher mode
@@ -35,7 +39,8 @@ Solving cryptopals challenges, found [here](https://cryptopals.com/), using Gola
 6. [ ] Clone an MT19937 RNG from its output
 7. [ ] Create the MT19937 stream cipher and break it
 
-## Set 4: Stream crypto and randomness
+Set 4: Stream crypto and randomness
+---
 
 0. [ ] Break "random access read/write" AES CTR
 1. [ ] CTR bitflipping
@@ -46,7 +51,8 @@ Solving cryptopals challenges, found [here](https://cryptopals.com/), using Gola
 6. [ ] Implement and break HMAC-SHA1 with an artificial timing leak
 7. [ ] Break HMAC-SHA1 with a slightly less artificial timing leak
 
-## Set 5: Diffie-Hellman and friends
+Set 5: Diffie-Hellman and friends
+---
 
 0. [ ] Implement Diffie-Hellman
 1. [ ] Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection
@@ -57,7 +63,8 @@ Solving cryptopals challenges, found [here](https://cryptopals.com/), using Gola
 6. [ ] Implement RSA
 7. [ ] Implement an E=3 RSA Broadcast attack
 
-## Set 6: RSA and DSA
+Set 6: RSA and DSA
+---
 
 0. [ ] Implement unpadded message recovery oracle
 1. [ ] Bleichenbacher's e=3 RSA Attack
@@ -68,7 +75,8 @@ Solving cryptopals challenges, found [here](https://cryptopals.com/), using Gola
 6. [ ] Bleichenbacher's PKCS 0.5 Padding Oracle (Simple Case)
 7. [ ] Bleichenbacher's PKCS 0.5 Padding Oracle (Complete Case)
 
-## Set 7: Hashes
+Set 7: Hashes
+---
 
 0. [ ] CBC-MAC Message Forgery
 1. [ ] Hashing with CBC-MAC
@@ -79,7 +87,8 @@ Solving cryptopals challenges, found [here](https://cryptopals.com/), using Gola
 6. [ ] MD4 Collisions
 7. [ ] RC4 Single-Byte Biases
 
-## Set 8: Abstract Algebra
+Set 8: Abstract Algebra
+---
 
 0. [ ] Diffie-Hellman Revisited: Small Subgroup Confinement
 1. [ ] Pollard's Method for Catching Kangaroos
