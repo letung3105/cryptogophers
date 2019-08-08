@@ -7,82 +7,81 @@ import (
 	"sort"
 
 	"github.com/letung3105/cryptogophers/pkg/crypts"
-	"github.com/letung3105/cryptogophers/pkg/decrypts"
 	"github.com/letung3105/cryptogophers/pkg/utils"
 	"github.com/pkg/errors"
 )
 
 // RepeatingXORDecrypt decrypts the base64 encoded cipher text stored in the given file
-func RepeatingXORDecrypt(filepath string, keysizeMax, keysizeTrials int) ([]byte, []byte, error) {
-	cipherB64, err := ioutil.ReadFile(filepath)
+func RepeatingXORDecrypt(filepath string, keysizeMax, keysizeTrials int) ([]byte, []byte, float64, error) {
+	srcB64, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Could not open file")
+		return nil, nil, 0, errors.Wrapf(err, "could not open: %s", filepath)
 	}
 
 	b64Encoding := base64.StdEncoding
-	cipher := make([]byte, b64Encoding.DecodedLen(len(cipherB64)))
-	n, err := b64Encoding.Decode(cipher, cipherB64)
+	src := make([]byte, b64Encoding.DecodedLen(len(srcB64)))
+	n, err := b64Encoding.Decode(src, srcB64)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Could not decode base64")
+		return nil, nil, 0, errors.Wrapf(err, "could not decode: %s", srcB64)
 	}
-	cipher = cipher[:n]
+	src = src[:n]
 
-	possibles, err := getPossibleKeysizes(cipher, keysizeMax, keysizeTrials)
+	keyGuesses, err := guessKeysize(src, keysizeMax, keysizeTrials)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Could not get possible keys information")
+		return nil, nil, 0, errors.Wrap(err, "could not get possible keys size")
 	}
 
-	var possibleKey []byte
-	var possiblePlain []byte
+	var key []byte
+	var dst []byte
 	minScore := math.MaxFloat64
-	for _, p := range possibles {
-		key := getPossibleKey(cipher, p.size)
-		plain := crypts.RepeatingXOR(cipher, key)
+	for _, guess := range keyGuesses {
+		pk := guessKey(src, guess.size)
+		plain := crypts.RepeatingXOR(src, pk)
 		score := utils.ScoreTxtEn(plain)
 		if score < minScore {
 			minScore = score
-			possibleKey = key
-			possiblePlain = plain
+			key = pk
+			dst = plain
 		}
 	}
 
-	return possiblePlain, possibleKey, nil
+	return dst, key, minScore, nil
 }
 
-func getPossibleKey(cipher []byte, keysize int) []byte {
-	blocks := utils.BytesBlocksTranspose(utils.BytesBlockMake(cipher, uint(keysize)))
-	key := make([]byte, keysize)
+func guessKey(src []byte, keysize int) []byte {
+	blocks := utils.BytesBlocksTranspose(utils.BytesBlockMake(src, keysize))
+	dst := make([]byte, keysize)
 	for i, block := range blocks {
-		_, k, _ := decrypts.SingleByteXOR(block)
-		key[i] = k
+		_, k, _ := SingleXORDecrypt(block)
+		dst[i] = k
 	}
-	return key
+	return dst
 }
 
-func getPossibleKeysizes(cipher []byte, keysizeMax, keysizeTrials int) (sortPossibleKey, error) {
-	var keysInfo sortPossibleKey
+func guessKeysize(src []byte, keysizeMax, keysizeTrials int) (sortKeyGuess, error) {
+	var keyGuesses sortKeyGuess
 	for keysize := 1; keysize <= keysizeMax; keysize++ {
-		normDistance, err := normAvgDistance(cipher, keysize)
+		d, err := getNormHamming(src, keysize)
 		if err != nil {
-			return nil, errors.Wrap(err, "Could not get normalized average hamming distance")
+			return nil, errors.Wrapf(err, "could not get normalized average hamming distance")
 		}
 
-		if normDistance > 0 {
-			keysInfo = append(keysInfo, &possibleKey{
+		if d > 0 {
+			keyGuesses = append(keyGuesses, &keyGuess{
 				size:         keysize,
-				normDistance: normDistance,
+				normDistance: d,
 			})
 		}
 	}
 
-	sort.Sort(keysInfo)
-	if len(keysInfo) > keysizeTrials {
-		return keysInfo[:keysizeTrials], nil
+	sort.Sort(keyGuesses)
+	if len(keyGuesses) > keysizeTrials {
+		return keyGuesses[:keysizeTrials], nil
 	}
-	return keysInfo, nil
+	return keyGuesses, nil
 }
 
-func normAvgDistance(src []byte, blocksize int) (float64, error) {
+func getNormHamming(src []byte, blocksize int) (float64, error) {
 	var normDistance float64
 	var blocks int
 	x2Blocksize := 2 * blocksize
@@ -90,7 +89,7 @@ func normAvgDistance(src []byte, blocksize int) (float64, error) {
 	for len(src) > x2Blocksize {
 		distance, err := utils.HammingDistance(src[:blocksize], src[blocksize:x2Blocksize])
 		if err != nil {
-			return -1, errors.Wrap(err, "Could not get hamming distance")
+			return -1, errors.Wrap(err, "could not get hamming distance")
 		}
 
 		normDistance += float64(distance) / float64(blocksize)
@@ -104,13 +103,13 @@ func normAvgDistance(src []byte, blocksize int) (float64, error) {
 	return normDistance, nil
 }
 
-type possibleKey struct {
+type keyGuess struct {
 	size         int
 	normDistance float64
 }
 
-type sortPossibleKey []*possibleKey
+type sortKeyGuess []*keyGuess
 
-func (s sortPossibleKey) Len() int           { return len(s) }
-func (s sortPossibleKey) Less(i, j int) bool { return s[i].normDistance < s[j].normDistance }
-func (s sortPossibleKey) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s sortKeyGuess) Len() int           { return len(s) }
+func (s sortKeyGuess) Less(i, j int) bool { return s[i].normDistance < s[j].normDistance }
+func (s sortKeyGuess) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }

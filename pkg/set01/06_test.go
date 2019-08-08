@@ -4,11 +4,17 @@ import "testing"
 
 func TestRepeatingXORDecrypt(t *testing.T) {
 	t.Parallel()
-	filepath := "../../data/06.txt"
-
-	plain, key, err := RepeatingXORDecrypt(filepath, 40, 1)
-	if err != nil {
-		t.Fatalf("Could not detect single byte xor cipher: %v", err)
+	test := struct {
+		filepath      string
+		keysizeMax    int
+		keysizeTrials int
+	}{
+		"../../data/06.txt", 40, 1,
 	}
-	t.Logf("Key: %s | Repeating XOR plaintext: %s", key, plain)
+
+	out, key, score, err := RepeatingXORDecrypt(test.filepath, test.keysizeMax, test.keysizeTrials)
+	if err != nil {
+		t.Fatalf("unexpected error: %+v", err)
+	}
+	t.Logf("key: %s | score: %.4f\n%s", key, score, out)
 }
