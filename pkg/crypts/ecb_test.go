@@ -53,12 +53,12 @@ func TestECBEncrypterAES(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			c, err := aes.NewCipher(test.key)
 			if err != nil {
-				t.Fatalf("unexpected error: %+v", err)
+				t.Fatalf("unexpected error\n%+v", err)
 			}
 
 			encrypter := NewECBEncrypter(c)
 			if encrypter.BlockSize() != test.blockSize {
-				t.Fatalf("incorrect block size:\nhave %d\nwant %d",
+				t.Fatalf("incorrect block size\nhave %d\nwant %d",
 					encrypter.BlockSize(), test.blockSize,
 				)
 			}
@@ -67,7 +67,7 @@ func TestECBEncrypterAES(t *testing.T) {
 			copy(data, test.in)
 			encrypter.CryptBlocks(data, data)
 			if !bytes.Equal(data, test.out) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", data, test.out)
+				t.Errorf("unexpected output\nhave %x\nwant %x", data, test.out)
 			}
 		})
 	}
@@ -79,12 +79,12 @@ func TestECBDecrypterAES(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			c, err := aes.NewCipher(test.key)
 			if err != nil {
-				t.Fatalf("unexpected error: %+v", err)
+				t.Fatalf("unexpected error\n%+v", err)
 			}
 
 			decrypter := NewECBDecrypter(c)
 			if decrypter.BlockSize() != test.blockSize {
-				t.Fatalf("incorrect block size:\nhave %d\nwant %d",
+				t.Fatalf("incorrect block size\nhave %d\nwant %d",
 					decrypter.BlockSize(), test.blockSize,
 				)
 			}
@@ -93,7 +93,7 @@ func TestECBDecrypterAES(t *testing.T) {
 			copy(data, test.out)
 			decrypter.CryptBlocks(data, data)
 			if !bytes.Equal(data, test.in) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", data, test.in)
+				t.Errorf("unexpected output\nhave %x\nwant %x", data, test.in)
 			}
 		})
 	}

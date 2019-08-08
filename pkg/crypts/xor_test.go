@@ -41,19 +41,16 @@ func TestFixedXOR(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			out, err := FixedXOR(test.in, test.key)
 			if err != nil && !test.hasError {
-				t.Fatalf("unexpected error: %+v", err)
+				t.Fatalf("unexpected error\n%+v", err)
 			}
 			if !bytes.Equal(out, test.out) {
-				t.Errorf(
-					"FixedXOR(%x, %x)\nhave %x\nwant %x",
-					test.in, test.key, out, test.out,
-				)
+				t.Errorf("unexpected output\nhave %x\nwant %x", out, test.out)
 			}
 		})
 	}
 }
 
-func TestSingleByteXOR(t *testing.T) {
+func TestSingleXOR(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name string
@@ -76,12 +73,9 @@ func TestSingleByteXOR(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			out := SingleByteXOR(test.in, test.key)
+			out := SingleXOR(test.in, test.key)
 			if !bytes.Equal(out, test.out) {
-				t.Errorf(
-					"SingleByteXOR(%x, %x)\nhave%x\nwant %x",
-					test.in, test.key, out, test.out,
-				)
+				t.Errorf("unexpected output\nhave %x\nwant %x", out, test.out)
 			}
 		})
 	}
@@ -137,10 +131,7 @@ func TestRepeatingXOR(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			out := RepeatingXOR(test.in, test.key)
 			if !bytes.Equal(out, test.out) {
-				t.Errorf(
-					"RepeatingXOR(%x, %x)\nhave%x\nwant %x",
-					test.in, test.key, out, test.out,
-				)
+				t.Errorf("unexpected output\nhave %x\nwant %x", out, test.out)
 			}
 		})
 	}
