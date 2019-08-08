@@ -3,7 +3,6 @@ package set01
 import (
 	"encoding/base64"
 	"encoding/hex"
-	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -13,9 +12,7 @@ func HexToB64(src []byte) ([]byte, error) {
 	tmp := make([]byte, hex.DecodedLen(len(src)))
 	n, err := hex.Decode(tmp, src)
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf(
-			"could not decode %x", src,
-		))
+		return nil, errors.Wrapf(err, "could not decode: %s", src)
 	}
 	tmp = tmp[:n]
 

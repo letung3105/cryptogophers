@@ -17,9 +17,9 @@ func TestHexToB64(t *testing.T) {
 
 	out, err := HexToB64(test.in)
 	if err != nil {
-		t.Fatalf("HexToB64(%x) = %+v", test.in, err)
+		t.Fatalf("unexpected error: %+v", err)
 	}
 	if !bytes.Equal(out, test.out) {
-		t.Errorf("unexpected output\nhave %x\nwant %x", out, test.out)
+		t.Errorf("unexpected output:\nhave %s\nwant %s", out, test.out)
 	}
 }
