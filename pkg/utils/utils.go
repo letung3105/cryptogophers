@@ -5,10 +5,10 @@ import (
 )
 
 // BytesBlockMake splits the buffer into chunks of with max length of blocksize
-func BytesBlockMake(src []byte, blocksize uint) [][]byte {
+func BytesBlockMake(src []byte, blocksize int) [][]byte {
 	var blocks [][]byte
 	if blocksize > 0 {
-		for len(src) > int(blocksize) {
+		for len(src) > blocksize {
 			blocks = append(blocks, src[:blocksize])
 			src = src[blocksize:]
 		}

@@ -15,7 +15,7 @@ import (
 func RepeatingXORDecrypt(filepath string, keysizeMax, keysizeTrials int) ([]byte, []byte, float64, error) {
 	srcB64, err := ioutil.ReadFile(filepath)
 	if err != nil {
-		return nil, nil, 0, errors.Wrapf(err, "could not open: %s", filepath)
+		return nil, nil, 0, errors.Wrapf(err, "could not read: %s", filepath)
 	}
 
 	b64Encoding := base64.StdEncoding
