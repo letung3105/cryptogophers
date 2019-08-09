@@ -7,7 +7,7 @@ import (
 
 func TestHexToB64(t *testing.T) {
 	t.Parallel()
-	test := struct {
+	tc := struct {
 		in  []byte
 		out []byte
 	}{
@@ -15,11 +15,11 @@ func TestHexToB64(t *testing.T) {
 		out: []byte("SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"),
 	}
 
-	out, err := HexToB64(test.in)
+	out, err := HexToB64(tc.in)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
-	if !bytes.Equal(out, test.out) {
-		t.Errorf("unexpected output:\nhave %s\nwant %s", out, test.out)
+	if !bytes.Equal(out, tc.out) {
+		t.Errorf("unexpected output:\nhave %s\nwant %s", out, tc.out)
 	}
 }

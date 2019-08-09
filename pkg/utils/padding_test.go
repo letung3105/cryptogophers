@@ -7,7 +7,7 @@ import (
 
 func TestPKCS7Pad(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name      string
 		paddedLen int
 		in        []byte
@@ -72,11 +72,11 @@ func TestPKCS7Pad(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out := PKCS7Pad(test.in, test.paddedLen)
-			if !bytes.Equal(out, test.out) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", out, test.out)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out := PKCS7Pad(tc.in, tc.paddedLen)
+			if !bytes.Equal(out, tc.out) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", out, tc.out)
 			}
 		})
 	}

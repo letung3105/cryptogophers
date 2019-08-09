@@ -13,7 +13,7 @@ import (
 
 func TestECBDecryptB64AES(t *testing.T) {
 	t.Parallel()
-	test := struct {
+	tc := struct {
 		filepath string
 		key      []byte
 	}{
@@ -21,14 +21,14 @@ func TestECBDecryptB64AES(t *testing.T) {
 		[]byte("YELLOW SUBMARINE"),
 	}
 
-	out, err := ECBDecryptB64AES(test.filepath, test.key)
+	out, err := ECBDecryptB64AES(tc.filepath, tc.key)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
 
-	inB64, err := ioutil.ReadFile(test.filepath)
+	inB64, err := ioutil.ReadFile(tc.filepath)
 	if err != nil {
-		t.Fatal(errors.Wrapf(err, "could not read: %s", test.filepath))
+		t.Fatal(errors.Wrapf(err, "could not read: %s", tc.filepath))
 	}
 
 	b64 := base64.StdEncoding
@@ -39,9 +39,9 @@ func TestECBDecryptB64AES(t *testing.T) {
 	}
 	in = in[:n]
 
-	c, err := aes.NewCipher(test.key)
+	c, err := aes.NewCipher(tc.key)
 	if err != nil {
-		t.Fatal(errors.Wrapf(err, "could not create cipher from key: %s", test.key))
+		t.Fatal(errors.Wrapf(err, "could not create cipher from key: %s", tc.key))
 	}
 	encrypter := crypts.NewECBEncrypter(c)
 	constructed := make([]byte, len(out))

@@ -7,7 +7,7 @@ import (
 
 func TestDetectECB(t *testing.T) {
 	t.Parallel()
-	test := struct {
+	tc := struct {
 		filepath  string
 		blocksize int
 	}{
@@ -15,7 +15,7 @@ func TestDetectECB(t *testing.T) {
 		16,
 	}
 
-	ciphers, err := DetectECB(test.filepath, test.blocksize)
+	ciphers, err := DetectECB(tc.filepath, tc.blocksize)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
@@ -24,6 +24,6 @@ func TestDetectECB(t *testing.T) {
 		out += fmt.Sprintf("+ %s\n", c)
 	}
 
-	// TODO: add result file to test against output
+	// TODO: add result file to tc against output
 	t.Logf("found:\n%s", out)
 }

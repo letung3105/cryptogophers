@@ -12,7 +12,7 @@ import (
 
 func TestRepeatingXORDecrypt(t *testing.T) {
 	t.Parallel()
-	test := struct {
+	tc := struct {
 		filepath      string
 		keysizeMax    int
 		keysizeTrials int
@@ -20,14 +20,14 @@ func TestRepeatingXORDecrypt(t *testing.T) {
 		"./testdata/06.txt", 40, 1,
 	}
 
-	out, key, _, err := RepeatingXORDecrypt(test.filepath, test.keysizeMax, test.keysizeTrials)
+	out, key, _, err := RepeatingXORDecrypt(tc.filepath, tc.keysizeMax, tc.keysizeTrials)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
 
-	inB64, err := ioutil.ReadFile(test.filepath)
+	inB64, err := ioutil.ReadFile(tc.filepath)
 	if err != nil {
-		t.Fatal(errors.Wrapf(err, "could not read: %s", test.filepath))
+		t.Fatal(errors.Wrapf(err, "could not read: %s", tc.filepath))
 	}
 
 	b64 := base64.StdEncoding

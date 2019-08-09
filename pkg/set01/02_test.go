@@ -7,7 +7,7 @@ import (
 
 func TestFixedXORCipher(t *testing.T) {
 	t.Parallel()
-	test := struct {
+	tc := struct {
 		key []byte
 		in  []byte
 		out []byte
@@ -17,11 +17,11 @@ func TestFixedXORCipher(t *testing.T) {
 		[]byte("746865206b696420646f6e277420706c6179"),
 	}
 
-	out, err := FixedXORCipher(test.in, test.key)
+	out, err := FixedXORCipher(tc.in, tc.key)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
-	if !bytes.Equal(out, test.out) {
-		t.Errorf("unexpected output:\nhave %s\nwant %s", out, test.out)
+	if !bytes.Equal(out, tc.out) {
+		t.Errorf("unexpected output:\nhave %s\nwant %s", out, tc.out)
 	}
 }

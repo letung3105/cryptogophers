@@ -7,7 +7,7 @@ import (
 
 func TestBytesBlocksMake(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name      string
 		blocksize int
 		in        []byte
@@ -39,11 +39,11 @@ func TestBytesBlocksMake(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out := BytesBlockMake(test.in, test.blocksize)
-			if !reflect.DeepEqual(out, test.out) {
-				t.Errorf("unexpected output:\nhave %v\nwant %v", out, test.out)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out := BytesBlockMake(tc.in, tc.blocksize)
+			if !reflect.DeepEqual(out, tc.out) {
+				t.Errorf("unexpected output:\nhave %v\nwant %v", out, tc.out)
 			}
 		})
 	}
@@ -51,7 +51,7 @@ func TestBytesBlocksMake(t *testing.T) {
 
 func TestBytesBlocksTranspose(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name string
 		in   [][]byte
 		out  [][]byte
@@ -83,11 +83,11 @@ func TestBytesBlocksTranspose(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out := BytesBlocksTranspose(test.in)
-			if !reflect.DeepEqual(out, test.out) {
-				t.Errorf("unexpected output:\nhave %v\nwant %v", out, test.out)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out := BytesBlocksTranspose(tc.in)
+			if !reflect.DeepEqual(out, tc.out) {
+				t.Errorf("unexpected output:\nhave %v\nwant %v", out, tc.out)
 			}
 		})
 	}
@@ -95,7 +95,7 @@ func TestBytesBlocksTranspose(t *testing.T) {
 
 func TestHasDupBlock(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name      string
 		blocksize int
 		in        []byte
@@ -133,11 +133,11 @@ func TestHasDupBlock(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out := HasNonOverlapDup(test.in, test.blocksize)
-			if out != test.out {
-				t.Errorf("unexpected output:\nhave %t\nwant %t", out, test.out)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out := HasNonOverlapDup(tc.in, tc.blocksize)
+			if out != tc.out {
+				t.Errorf("unexpected output:\nhave %t\nwant %t", out, tc.out)
 			}
 		})
 	}

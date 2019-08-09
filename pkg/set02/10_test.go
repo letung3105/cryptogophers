@@ -4,7 +4,7 @@ import "testing"
 
 func TestDecryptCBC(t *testing.T) {
 	t.Parallel()
-	test := struct {
+	tc := struct {
 		filepath string
 		key      []byte
 		iv       []byte
@@ -17,11 +17,11 @@ func TestDecryptCBC(t *testing.T) {
 		},
 	}
 
-	out, err := DecryptCBC(test.filepath, test.key, test.iv)
+	out, err := DecryptCBC(tc.filepath, tc.key, tc.iv)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
 
-	// TODO: add result file to test against output
+	// TODO: add result file to tc against output
 	t.Logf("output:\n%s", out)
 }

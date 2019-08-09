@@ -4,7 +4,7 @@ import "testing"
 
 func TestHammingDistance(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name     string
 		hasError bool
 		target   []byte
@@ -41,14 +41,14 @@ func TestHammingDistance(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out, err := HammingDistance(test.in, test.target)
-			if err != nil && !test.hasError {
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out, err := HammingDistance(tc.in, tc.target)
+			if err != nil && !tc.hasError {
 				t.Fatalf("unexpected error: %+v", err)
 			}
-			if out != test.out {
-				t.Errorf("unexpected output:\nhave %d\nwant %d", out, test.out)
+			if out != tc.out {
+				t.Errorf("unexpected output:\nhave %d\nwant %d", out, tc.out)
 			}
 		})
 	}

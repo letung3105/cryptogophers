@@ -1,10 +1,12 @@
 package utils
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestScoreTxtEn(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name string
 		in   []byte
 		out  float64
@@ -31,11 +33,11 @@ func TestScoreTxtEn(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out := ScoreTxtEn(test.in)
-			if out != test.out {
-				t.Errorf("unexpected output:\nhave %.4f\nwant %.4f", out, test.out)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out := ScoreTxtEn(tc.in)
+			if out != tc.out {
+				t.Errorf("unexpected output:\nhave %.4f\nwant %.4f", out, tc.out)
 			}
 		})
 	}

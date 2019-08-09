@@ -9,13 +9,13 @@ import (
 
 func TestDetectSingleXOR(t *testing.T) {
 	t.Parallel()
-	test := struct {
+	tc := struct {
 		filepath string
 	}{
 		"./testdata/04.txt",
 	}
 
-	out, in, key, _, err := DetectSingleXOR(test.filepath)
+	out, in, key, _, err := DetectSingleXOR(tc.filepath)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
