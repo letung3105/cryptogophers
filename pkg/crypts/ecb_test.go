@@ -49,25 +49,25 @@ var ecbAESTests = []struct {
 
 func TestECBEncrypterAES(t *testing.T) {
 	t.Parallel()
-	for _, test := range ecbAESTests {
-		t.Run(test.name, func(t *testing.T) {
-			c, err := aes.NewCipher(test.key)
+	for _, tc := range ecbAESTests {
+		t.Run(tc.name, func(t *testing.T) {
+			c, err := aes.NewCipher(tc.key)
 			if err != nil {
 				t.Fatalf("unexpected error: %+v", err)
 			}
 
 			encrypter := NewECBEncrypter(c)
-			if encrypter.BlockSize() != test.blockSize {
+			if encrypter.BlockSize() != tc.blockSize {
 				t.Fatalf("incorrect block size:\nhave %d\nwant %d",
-					encrypter.BlockSize(), test.blockSize,
+					encrypter.BlockSize(), tc.blockSize,
 				)
 			}
 
-			data := make([]byte, len(test.in))
-			copy(data, test.in)
+			data := make([]byte, len(tc.in))
+			copy(data, tc.in)
 			encrypter.CryptBlocks(data, data)
-			if !bytes.Equal(data, test.out) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", data, test.out)
+			if !bytes.Equal(data, tc.out) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", data, tc.out)
 			}
 		})
 	}
@@ -75,25 +75,25 @@ func TestECBEncrypterAES(t *testing.T) {
 
 func TestECBDecrypterAES(t *testing.T) {
 	t.Parallel()
-	for _, test := range ecbAESTests {
-		t.Run(test.name, func(t *testing.T) {
-			c, err := aes.NewCipher(test.key)
+	for _, tc := range ecbAESTests {
+		t.Run(tc.name, func(t *testing.T) {
+			c, err := aes.NewCipher(tc.key)
 			if err != nil {
 				t.Fatalf("unexpected error: %+v", err)
 			}
 
 			decrypter := NewECBDecrypter(c)
-			if decrypter.BlockSize() != test.blockSize {
+			if decrypter.BlockSize() != tc.blockSize {
 				t.Fatalf("incorrect block size:\nhave %d\nwant %d",
-					decrypter.BlockSize(), test.blockSize,
+					decrypter.BlockSize(), tc.blockSize,
 				)
 			}
 
-			data := make([]byte, len(test.out))
-			copy(data, test.out)
+			data := make([]byte, len(tc.out))
+			copy(data, tc.out)
 			decrypter.CryptBlocks(data, data)
-			if !bytes.Equal(data, test.in) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", data, test.in)
+			if !bytes.Equal(data, tc.in) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", data, tc.in)
 			}
 		})
 	}

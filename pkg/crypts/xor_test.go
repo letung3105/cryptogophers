@@ -7,7 +7,7 @@ import (
 
 func TestFixedXOR(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name     string
 		hasError bool
 		key      []byte
@@ -37,14 +37,14 @@ func TestFixedXOR(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out, err := FixedXOR(test.in, test.key)
-			if err != nil && !test.hasError {
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out, err := FixedXOR(tc.in, tc.key)
+			if err != nil && !tc.hasError {
 				t.Fatalf("unexpected error: %+v", err)
 			}
-			if !bytes.Equal(out, test.out) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", out, test.out)
+			if !bytes.Equal(out, tc.out) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", out, tc.out)
 			}
 		})
 	}
@@ -52,7 +52,7 @@ func TestFixedXOR(t *testing.T) {
 
 func TestSingleXOR(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name string
 		key  byte
 		in   []byte
@@ -71,11 +71,11 @@ func TestSingleXOR(t *testing.T) {
 			[]byte{},
 		},
 	}
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out := SingleXOR(test.in, test.key)
-			if !bytes.Equal(out, test.out) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", out, test.out)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out := SingleXOR(tc.in, tc.key)
+			if !bytes.Equal(out, tc.out) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", out, tc.out)
 			}
 		})
 	}
@@ -83,7 +83,7 @@ func TestSingleXOR(t *testing.T) {
 
 func TestRepeatingXOR(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	tt := []struct {
 		name string
 		key  []byte
 		in   []byte
@@ -127,11 +127,11 @@ func TestRepeatingXOR(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			out := RepeatingXOR(test.in, test.key)
-			if !bytes.Equal(out, test.out) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", out, test.out)
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			out := RepeatingXOR(tc.in, tc.key)
+			if !bytes.Equal(out, tc.out) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", out, tc.out)
 			}
 		})
 	}

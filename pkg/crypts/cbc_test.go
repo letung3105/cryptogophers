@@ -11,14 +11,14 @@ import (
 var cbcAESTests = []struct {
 	name      string
 	blockSize int
-	key       []byte
 	iv        []byte
+	key       []byte
 	in        []byte
 	out       []byte
 }{
 	{
 		"CBC-AES128",
-		16, aesCommonKey128, aesCommonIV, aesCommonInput,
+		16, aesCommonIV, aesCommonKey128, aesCommonInput,
 		[]byte{
 			0x76, 0x49, 0xab, 0xac, 0x81, 0x19, 0xb2, 0x46, 0xce, 0xe9, 0x8e, 0x9b, 0x12, 0xe9, 0x19, 0x7d,
 			0x50, 0x86, 0xcb, 0x9b, 0x50, 0x72, 0x19, 0xee, 0x95, 0xdb, 0x11, 0x3a, 0x91, 0x76, 0x78, 0xb2,
@@ -28,7 +28,7 @@ var cbcAESTests = []struct {
 	},
 	{
 		"CBC-AES192",
-		16, aesCommonKey192, aesCommonIV, aesCommonInput,
+		16, aesCommonIV, aesCommonKey192, aesCommonInput,
 		[]byte{
 			0x4f, 0x02, 0x1d, 0xb2, 0x43, 0xbc, 0x63, 0x3d, 0x71, 0x78, 0x18, 0x3a, 0x9f, 0xa0, 0x71, 0xe8,
 			0xb4, 0xd9, 0xad, 0xa9, 0xad, 0x7d, 0xed, 0xf4, 0xe5, 0xe7, 0x38, 0x76, 0x3f, 0x69, 0x14, 0x5a,
@@ -38,7 +38,7 @@ var cbcAESTests = []struct {
 	},
 	{
 		"CBC-AES256",
-		16, aesCommonKey256, aesCommonIV, aesCommonInput,
+		16, aesCommonIV, aesCommonKey256, aesCommonInput,
 		[]byte{
 			0xf5, 0x8c, 0x4c, 0x04, 0xd6, 0xe5, 0xf1, 0xba, 0x77, 0x9e, 0xab, 0xfb, 0x5f, 0x7b, 0xfb, 0xd6,
 			0x9c, 0xfc, 0x4e, 0x96, 0x7e, 0xdb, 0x80, 0x8d, 0x67, 0x9f, 0x77, 0x7b, 0xc6, 0x70, 0x2c, 0x7d,
@@ -50,25 +50,25 @@ var cbcAESTests = []struct {
 
 func TestCBCEncrypterAES(t *testing.T) {
 	t.Parallel()
-	for _, test := range cbcAESTests {
-		t.Run(test.name, func(t *testing.T) {
-			c, err := aes.NewCipher(test.key)
+	for _, tc := range cbcAESTests {
+		t.Run(tc.name, func(t *testing.T) {
+			c, err := aes.NewCipher(tc.key)
 			if err != nil {
 				t.Fatalf("unexpected error: %+v", err)
 			}
 
-			encrypter := NewCBCEncrypter(c, test.iv)
-			if encrypter.BlockSize() != test.blockSize {
+			encrypter := NewCBCEncrypter(c, tc.iv)
+			if encrypter.BlockSize() != tc.blockSize {
 				t.Fatalf("incorrect block size:\nhave %d\nwant %d",
-					encrypter.BlockSize(), test.blockSize,
+					encrypter.BlockSize(), tc.blockSize,
 				)
 			}
 
-			data := make([]byte, len(test.in))
-			copy(data, test.in)
+			data := make([]byte, len(tc.in))
+			copy(data, tc.in)
 			encrypter.CryptBlocks(data, data)
-			if !bytes.Equal(data, test.out) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", data, test.out)
+			if !bytes.Equal(data, tc.out) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", data, tc.out)
 			}
 		})
 	}
@@ -76,25 +76,25 @@ func TestCBCEncrypterAES(t *testing.T) {
 
 func TestCBCDecrypterAES(t *testing.T) {
 	t.Parallel()
-	for _, test := range cbcAESTests {
-		t.Run(test.name, func(t *testing.T) {
-			c, err := aes.NewCipher(test.key)
+	for _, tc := range cbcAESTests {
+		t.Run(tc.name, func(t *testing.T) {
+			c, err := aes.NewCipher(tc.key)
 			if err != nil {
 				t.Fatalf("unexpected error: %+v", err)
 			}
 
-			decrypter := NewCBCDecrypter(c, test.iv)
-			if decrypter.BlockSize() != test.blockSize {
+			decrypter := NewCBCDecrypter(c, tc.iv)
+			if decrypter.BlockSize() != tc.blockSize {
 				t.Fatalf("incorrect block size:\nhave %d\nwant %d",
-					decrypter.BlockSize(), test.blockSize,
+					decrypter.BlockSize(), tc.blockSize,
 				)
 			}
 
-			data := make([]byte, len(test.out))
-			copy(data, test.out)
+			data := make([]byte, len(tc.out))
+			copy(data, tc.out)
 			decrypter.CryptBlocks(data, data)
-			if !bytes.Equal(data, test.in) {
-				t.Errorf("unexpected output:\nhave %x\nwant %x", data, test.in)
+			if !bytes.Equal(data, tc.in) {
+				t.Errorf("unexpected output:\nhave %x\nwant %x", data, tc.in)
 			}
 		})
 	}

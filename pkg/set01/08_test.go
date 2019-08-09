@@ -23,5 +23,7 @@ func TestDetectECB(t *testing.T) {
 	for _, c := range ciphers {
 		out += fmt.Sprintf("+ %s\n", c)
 	}
+
+	// TODO: add result file to test against output
 	t.Logf("found:\n%s", out)
 }

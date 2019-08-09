@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// DecryptCBC encrypts the file content with AES in CBC mode using the given key and IV
+// DecryptCBC decrypts the file content with AES in CBC mode using the given key and IV
 func DecryptCBC(filepath string, key, iv []byte) ([]byte, error) {
 	inB64, err := ioutil.ReadFile(filepath)
 	if err != nil {

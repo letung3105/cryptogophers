@@ -22,5 +22,6 @@ func TestDecryptCBC(t *testing.T) {
 		t.Fatalf("unexpected error: %+v", err)
 	}
 
+	// TODO: add result file to test against output
 	t.Logf("output:\n%s", out)
 }
