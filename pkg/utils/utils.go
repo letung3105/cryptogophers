@@ -2,10 +2,6 @@ package utils
 
 import (
 	"bytes"
-	"encoding/base64"
-	"encoding/hex"
-
-	"github.com/pkg/errors"
 )
 
 // BytesBlockMake splits the buffer into chunks of with max length of blocksize
@@ -53,30 +49,4 @@ func HasNonOverlapDup(src []byte, blocksize int) bool {
 		}
 	}
 	return false
-}
-
-// IsEqualHex compare a buffer with a hex encoded buffer
-func IsEqualHex(src, targetHex []byte) (bool, error) {
-	target := make([]byte, len(targetHex))
-	n, err := hex.Decode(target, targetHex)
-	if err != nil {
-		return false, errors.Wrapf(err, "could not decode: %s", targetHex)
-	}
-	target = target[:n]
-
-	return bytes.Equal(src, target), nil
-}
-
-// IsEqualB64 compare a buffer with a base64 encoded buffer
-func IsEqualB64(src, targetB64 []byte) (bool, error) {
-	b64 := base64.StdEncoding
-
-	target := make([]byte, len(targetB64))
-	n, err := b64.Decode(target, targetB64)
-	if err != nil {
-		return false, errors.Wrapf(err, "could not decode: %s", targetB64)
-	}
-	target = target[:n]
-
-	return bytes.Equal(src, target), nil
 }
