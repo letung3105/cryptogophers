@@ -11,7 +11,7 @@ func TestDetectECB(t *testing.T) {
 		filepath  string
 		blocksize int
 	}{
-		"../../data/08.txt",
+		"./testdata/08.txt",
 		16,
 	}
 

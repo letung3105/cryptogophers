@@ -20,7 +20,7 @@ func ECBDecryptB64AES(filepath string, key []byte) ([]byte, error) {
 	src := make([]byte, b64.DecodedLen(len(srcB64)))
 	n, err := b64.Decode(src, srcB64)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Could not decode: %s", srcB64)
+		return nil, errors.Wrapf(err, "could not decode: %s", srcB64)
 	}
 	src = src[:n]
 

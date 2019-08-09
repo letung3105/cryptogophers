@@ -1,18 +1,27 @@
 package set01
 
-import "testing"
+import (
+	"bytes"
+	"testing"
+
+	"github.com/letung3105/cryptogophers/pkg/crypts"
+)
 
 func TestDetectSingleXOR(t *testing.T) {
 	t.Parallel()
 	test := struct {
 		filepath string
 	}{
-		"../../data/04.txt",
+		"./testdata/04.txt",
 	}
 
-	out, key, score, err := DetectSingleXOR(test.filepath)
+	out, in, key, _, err := DetectSingleXOR(test.filepath)
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
-	t.Logf("key: %c | score: %.4f\n%s", key, score, out)
+
+	constructed := crypts.SingleXOR(out, key)
+	if !bytes.Equal(constructed, in) {
+		t.Errorf("incorrect reconstructed input:\nhave %x\nwant %x", constructed, in)
+	}
 }
