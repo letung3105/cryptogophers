@@ -3,6 +3,7 @@ CryptoGophers
 
 Solving cryptopals challenges, found [here](https://cryptopals.com/), using Golang
 
+
 Set 1: Basics
 ---
 
@@ -15,17 +16,19 @@ Set 1: Basics
 * [x] AES in ECB mode
 * [x] Detect AES in ECB mode
 
+
 Set 2: Block crypto
 ---
 
 * [x] Implement PKCS#7 padding
 * [x] Implement CBC mode
-* [ ] An ECB/CBC detection oracle
+* [x] An ECB/CBC detection oracle
 * [ ] Byte-at-a-time ECB decryption (Simple)
 * [ ] ECB cut-and-paste
 * [ ] Byte-at-a-time ECB decryption (Harder)
 * [ ] PKCS#7 padding validation
 * [ ] CBC bitflipping attacks
+
 
 Set 3: Block and stream crypto
 ---
@@ -39,6 +42,7 @@ Set 3: Block and stream crypto
 * [ ] Clone an MT19937 RNG from its output
 * [ ] Create the MT19937 stream cipher and break it
 
+
 Set 4: Stream crypto and randomness
 ---
 
@@ -50,6 +54,7 @@ Set 4: Stream crypto and randomness
 * [ ] Break an MD4 keyed MAC using length extension
 * [ ] Implement and break HMAC-SHA1 with an artificial timing leak
 * [ ] Break HMAC-SHA1 with a slightly less artificial timing leak
+
 
 Set 5: Diffie-Hellman and friends
 ---
@@ -63,6 +68,7 @@ Set 5: Diffie-Hellman and friends
 * [ ] Implement RSA
 * [ ] Implement an E=3 RSA Broadcast attack
 
+
 Set 6: RSA and DSA
 ---
 
@@ -74,6 +80,7 @@ Set 6: RSA and DSA
 * [ ] RSA parity oracle
 * [ ] Bleichenbacher's PKCS *5 Padding Oracle (Simple Case)
 * [ ] Bleichenbacher's PKCS *5 Padding Oracle (Complete Case)
+
 
 Set 7: Hashes
 ---
@@ -87,6 +94,7 @@ Set 7: Hashes
 * [ ] MD4 Collisions
 * [ ] RC4 Single-Byte Biases
 
+
 Set 8: Abstract Algebra
 ---
 
@@ -98,3 +106,9 @@ Set 8: Abstract Algebra
 * [ ] Key-Recovery Attacks on ECDSA with Biased Nonces
 * [ ] Key-Recovery Attacks on GCM with Repeated Nonces
 * [ ] Key-Recovery Attacks on GCM with a Truncated MAC
+
+
+TODOs
+----
+
+* Reduce verbosity? (panic everything)
