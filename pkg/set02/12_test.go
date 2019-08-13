@@ -23,11 +23,11 @@ func TestECBOracle(t *testing.T) {
 
 func TestBreakECBOracle(t *testing.T) {
 	t.Parallel()
-	out, blocksize, err := BreakECBOracle()
+	out, err := BreakECBOracle()
 	if err != nil {
 		t.Fatalf("unexpected error: %+v", err)
 	}
 
 	// TODO: add result file to test against output
-	t.Logf("block size %d\n%s", blocksize, out)
+	t.Logf("found:\n%s", out)
 }

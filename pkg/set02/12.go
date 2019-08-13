@@ -42,20 +42,19 @@ func ECBOracle(src []byte) ([]byte, error) {
 }
 
 // BreakECBOracle detects if the cipher text is encrypted with ECB and find the plaintext
-func BreakECBOracle() ([]byte, int, error) {
+func BreakECBOracle() ([]byte, error) {
 	var textsize int
-	var blocksize int
 	// find cipher block size and appended text length
 	for i := 1; i <= 32; i++ {
 		src := bytes.Repeat([]byte("A"), i*2)
 		out, err := ECBOracle(src)
 		if err != nil {
-			return nil, -1, errors.Wrapf(err, "could not encrypt: %s", src)
+			return nil, errors.Wrapf(err, "could not encrypt: %s", src)
 		}
 
 		if DetectOracle(out) {
-			blocksize = i
-			textsize = len(out) - blocksize*2
+			// output always full blocks
+			textsize = len(out) - i*2
 		}
 	}
 
@@ -69,7 +68,7 @@ func BreakECBOracle() ([]byte, int, error) {
 			entry := append(tmp, byte(b))
 			out, err := ECBOracle(entry)
 			if err != nil {
-				return nil, -1, errors.Wrapf(err, "could not encrypt: %s", entry)
+				return nil, errors.Wrapf(err, "could not encrypt: %s", entry)
 			}
 
 			cryptDict[string(out[:textsize])] = byte(b)
@@ -77,11 +76,11 @@ func BreakECBOracle() ([]byte, int, error) {
 
 		out, err := ECBOracle(src)
 		if err != nil {
-			return nil, -1, errors.Wrapf(err, "could not encrypt: %s", src)
+			return nil, errors.Wrapf(err, "could not encrypt: %s", src)
 		}
 
 		discovered = append(discovered, cryptDict[string(out[:textsize])])
 	}
 
-	return discovered, blocksize, nil
+	return discovered, nil
 }
