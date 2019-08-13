@@ -13,3 +13,6 @@
 
 # Editors config
 .idea/
+
+# Test/mocking scripts
+tests/
