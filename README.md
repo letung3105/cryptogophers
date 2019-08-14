@@ -27,7 +27,7 @@ Set 2: Block crypto
 * [x] ECB cut-and-paste
 * [x] Byte-at-a-time ECB decryption (Harder)
 * [x] PKCS#7 padding validation
-* [ ] CBC bitflipping attacks
+* [x] CBC bitflipping attacks
 
 
 Set 3: Block and stream crypto
